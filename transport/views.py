@@ -98,14 +98,14 @@ def vehicle_update(request, pk):
 
 
 def vehicle_delete(request, pk):
-    """Представление для удаления ТС"""
-    vehicle = get_object_or_404(Vehicle, pk=pk)  # Получаем объект
+
+    vehicle = get_object_or_404(Vehicle, pk=pk)
 
     if request.method == 'POST':
-        vehicle.delete()  # Удаляем объект из БД
-        return redirect('vehicle_list')  # Перенаправляем на страницу списка ТС после удаления
+        vehicle.delete()
+        return redirect('vehicle_list')
 
-    # Для GET-запроса показываем страницу подтверждения
+
     context = {
         'vehicle': vehicle
     }
@@ -114,4 +114,4 @@ def vehicle_delete(request, pk):
 
 from django.shortcuts import render
 
-# Create your views here.
+
