@@ -1,0 +1,24 @@
+{# transport/templates/transport/vehicle_confirm_delete.html #}
+
+{% extends 'transport/base.html' %}
+
+{% block title %}Подтвердить удаление ТС{% endblock %}
+
+{% block content %}
+
+    <h2>Подтвердить удаление</h2>
+
+    <div class="alert alert-danger" role="alert"> {# Класс Bootstrap для предупреждения #}
+        <p>Вы уверены, что хотите удалить транспортное средство?</p>
+        <p><strong>{{ vehicle.license_plate }} ({{ vehicle.make }} {{ vehicle.model }})</strong></p>
+        <p>Это действие необратимо.</p>
+    </div>
+
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger me-2">Удалить</button> {# Классы Bootstrap #}
+        <a href="{% url 'vehicle_detail' vehicle.pk %}" class="btn btn-secondary">Отмена</a> {# Классы Bootstrap #}
+    </form>
+
+{% endblock %}

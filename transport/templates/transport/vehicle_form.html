@@ -1,0 +1,46 @@
+{# transport/templates/transport/vehicle_form.html #}
+
+{% extends 'transport/base.html' %}
+
+{% block title %}{{ title }}{% endblock %} {# Используем переменную title из контекста #}
+
+{% block content %}
+
+    <h2>{{ title }}</h2>
+
+    <form method="post"> {# Метод POST для отправки данных формы #}
+        {% csrf_token %} {# Обязательный CSRF токен #}
+
+        {# {{ form.as_p }} #} {# Самый простой способ отобразить все поля формы в параграфах #}
+
+        {# Выводим поля по одному для лучшего контроля и применения стилей Bootstrap #}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }} {# <label for="...">...</label> #}
+                {{ field }} {# Сам виджет поля (<input>, <select>, <textarea>) #}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small> {# Класс Bootstrap для текста справки #}
+                {% endif %}
+                {% for error in field.errors %}
+                    <div class="invalid-feedback" style="display: block;">{{ error }}</div> {# Класс Bootstrap для ошибок #}
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        {# Ошибки формы, не связанные с конкретным полем #}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger"> {# Класс Bootstrap для предупреждений об ошибках #}
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+
+        <button type="submit" class="btn btn-primary me-2">Сохранить</button> {# Классы Bootstrap #}
+        {% if vehicle %} {# Если редактируем (объект vehicle передан в контексте) #}
+            <a href="{% url 'vehicle_detail' vehicle.pk %}" class="btn btn-secondary">Отмена</a> {# Классы Bootstrap #}
+        {% else %} {# Если добавляем #}
+            <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Отмена</a> {# Классы Bootstrap #}
+        {% endif %}
+    </form>
+
+{% endblock %}

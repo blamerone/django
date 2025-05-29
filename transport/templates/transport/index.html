@@ -1,0 +1,80 @@
+{# transport/templates/transport/index.html #}
+
+{% extends 'transport/base.html' %} {# Указываем базовый шаблон #}
+
+{% block title %}Главная - Система управления ТП{% endblock %} {# Переопределяем заголовок #}
+
+{% block content %} {# Начинаем блок контента #}
+
+    <h2>Обзор системы</h2>
+
+    <div class="row"> {# Используем сетку Bootstrap #}
+        <div class="col-md-4"> {# Колонки Bootstrap #}
+            <!-- Виджет 1: Обзор состояния автопарка -->
+            <div class="widget">
+                <h3>Обзор автопарка</h3>
+                <p>Всего ТС: <strong>{{ total_vehicles }}</strong></p>
+                <p>Активных ТС: <strong>{{ vehicles_active }}</strong></p>
+                <p>В ремонте: <strong>{{ vehicles_in_repair }}</strong></p>
+            </div>
+        </div>
+        <div class="col-md-8">
+             <!-- Виджет 2: Последние записи о ТО/Ремонте -->
+            <div class="widget">
+                <h3>Последние 5 записей о ТО/Ремонте</h3>
+                {% if latest_maintenance %}
+                    <ul>
+                        {% for record in latest_maintenance %}
+                            <li>
+                                {{ record.date|date:"d.m.Y" }}: {{ record.get_record_type_display }} для ТС
+                                {% if record.vehicle %} {# Проверяем, что ТС существует #}
+                                    <a href="{% url 'vehicle_detail' record.vehicle.id %}">{{ record.vehicle.license_plate }}</a>
+                                {% else %}
+                                    Неизвестное ТС
+                                {% endif %}
+                                - {{ record.description|truncatechars:100 }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Нет записей о ТО/Ремонте.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Виджет 3: Список ТС и назначенных водителей -->
+    <div class="widget">
+        <h3>Транспортные средства и водители</h3>
+        {% if vehicles_list %}
+            <table class="table table-striped"> {# Классы Bootstrap для таблицы #}
+                <thead>
+                    <tr>
+                        <th>Госномер</th>
+                        <th>Марка</th>
+                        <th>Модель</th>
+                        <th>Тип ТС</th>
+                        <th>Водитель</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vehicle in vehicles_list %}
+                        <tr>
+                            <td><a href="{% url 'vehicle_detail' vehicle.id %}">{{ vehicle.license_plate }}</a></td>
+                            <td>{{ vehicle.make }}</td>
+                            <td>{{ vehicle.model }}</td>
+                            <td>{{ vehicle.vehicle_type|default:"-" }}</td>
+                            <td>{{ vehicle.display_driver }}</td>
+                            <td>{{ vehicle.get_status_display }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Нет транспортных средств в системе.</p>
+        {% endif %}
+    </div>
+
+{% endblock %} {# Заканчиваем блок контента #}
