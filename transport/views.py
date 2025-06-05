@@ -7,8 +7,6 @@ from .forms import VehicleForm  # Импортируем форму
 
 
 def index(request):
-    """Представление для главной страницы"""
-    # Задача 1: Обзор состояния автопарка
     total_vehicles = Vehicle.objects.count()
     vehicles_in_repair = Vehicle.objects.filter(status='in_repair').count()
     vehicles_active = Vehicle.objects.filter(status='active').count()
